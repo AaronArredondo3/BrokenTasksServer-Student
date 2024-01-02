@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const bcrypt = require('bcrypts');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT;
 const expiresIn = {expiresIn: "1 day"};
-const { User } = require('../models');
+const { User } = require('../models/user.model');
 const { errorHandling, successHandling, incompleteHandling } = require('../helpers');
 
 //! Signup

@@ -1,4 +1,4 @@
-const router = require('express');
+const router = require('express').Router();
 const { Task } = require('../models');
 const { errorHandling, successHandling, incompleteHandling } = require('../helpers');
 const validateSession = require('../middleware/validate-session');
@@ -30,7 +30,7 @@ router.post('/', validateSession, async(req,res) => {
 })
 
 //! GET ALL
-router.get('/all-tasks', async(req,res) => {
+router.get('/', validateSession, async(req,res) => {
     try {
 
         const { id } = req.user;
@@ -76,7 +76,7 @@ router.put('/:id', validateSession, async(req,res) => {
         const update = {
             title,details,completed,date
         }
-        const returnOpt = {new:true};
+        const returnOpt = {new: true};
 
         const updatedTask = await Task.findOneAndUpdate(
             {_id: taskId,user_id:userId}, update, returnOpt
@@ -109,3 +109,4 @@ router.delete('/:id', validateSession, async(req,res) => {
     }
 })
 
+module.exports = router;

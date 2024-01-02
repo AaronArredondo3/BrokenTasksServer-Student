@@ -1,6 +1,6 @@
-
+const mongoose = require ('mongoose');
 const connection = process.env.DB;
-const collection = process.env;
+const collection = process.env.COLL;
 
 const db = async () => {
     try {
