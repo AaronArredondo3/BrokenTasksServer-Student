@@ -4,24 +4,25 @@ const { errorHandling, successHandling, incompleteHandling } = require('../helpe
 const validateSession = require('../middleware/validate-session');
 
 //! CREATE
-router.post('/', validateSession, async(req,res) => {
+router.post('/:user', validateSession, async(req,res) => {
     try {
         
         const { title, details, completed } = req.body;
-        const {id} = req.user;
+        
+        // const {id} = req.user;
 
         const task = new Task({
             date: req.date.date,
             title,
             details,
             completed,
-            user_id: id
+            user_id: req.user._id
         })
 
         const newTask = await task.save();
 
         newTask ?
-            successHandling(res,newTask) :
+            successHandling(res, newTask) :
             incompleteHandling(res);
 
     } catch (err) {
@@ -38,7 +39,7 @@ router.get('/', validateSession, async(req,res) => {
         const tasks = await Task.find({user_id: id});
 
         tasks ? 
-            successHandling(res,tasks) : 
+            successHandling(res, tasks) : 
             incompleteHandling(res);
         
     } catch (err) {
@@ -47,16 +48,16 @@ router.get('/', validateSession, async(req,res) => {
 })
 
 //! GET ONE
-router.get('/get-one/:id', validateSession, async(req,res) => {
+router.get('/find-one/:id', validateSession, async(req,res) => {
     try {
 
         const userId = req.user.id;
         const { id } = req.params;
 
-        const task = await Task.findEach({_id: id, user_id: userId});
+        const task = await Task.findOne({_id: id, user_id: req.user._Id});
 
         task ? 
-            successHandling(res,task) :
+            successHandling(res, task) :
             incompleteHandling(res);
         
     } catch (err) {
@@ -96,9 +97,9 @@ router.delete('/:id', validateSession, async(req,res) => {
     try {
         
         const { id } = req.params;
-        const userId = req.user.id;
+        // const userId = req.user.id;
 
-        const deleteTask = await Task.deleted({_id: id, user_id: userId});
+        const deleteTask = await Task.deleteOne({_id: id, user_id: req.user._Id});
 
         deleteTask.deletedCount ?
             successHandling(res, {message: "task deleted"}) :
